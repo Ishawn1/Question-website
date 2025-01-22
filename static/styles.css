@@ -1,0 +1,47 @@
+body {
+    font-family: sans-serif;
+    margin: 20px;
+}
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+textarea {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+}
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+#chatbot-output {
+    margin-top: 15px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 50px;
+}
+.toggle-bg {
+    display: block;
+    width: 2.75rem; /* Equivalent to w-11 in Tailwind (1rem = 4px * 2.75 = 11px,  2.75rem = 11px * 4 = 44px, which is roughly w-11) */
+    height: 1.5rem; /* Equivalent to h-6 in Tailwind */
+    border-radius: 9999px; /* Equivalent to rounded-full */
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter; /* Equivalent to transition-colors */
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Equivalent to ease-in-out */
+    transition-duration: 200ms; /* Equivalent to duration-200 */
+    cursor: pointer; /* Equivalent to cursor-pointer */
+}
+
+.toggle-dot {
+    display: block;
+    height: 1.25rem; /* Equivalent to h-5 */
+    width: 1.25rem; /* Equivalent to w-5 */
+    border-radius: 9999px; /* Equivalent to rounded-full */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Equivalent to shadow-md */
+    transform: translateX(0); /* Equivalent to translate-x-0 */
+    transition-property: transform; /* Equivalent to transition-transform */
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Equivalent to ease-in-out */
+    transition-duration: 200ms; /* Equivalent to duration-200 */
+    background-color: white; /* Equivalent to bg-white (we'll handle dark mode bg in HTML) */
+}
+
