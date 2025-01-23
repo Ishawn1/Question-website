@@ -33,10 +33,9 @@ This is a simple yet modern website designed for interactive learning and knowle
 
 2.  **Clone the Repository:**
     ```bash
-    git clone [your-repository-url]
+    git clone https://github.com/Ishawn1/Question-website
     cd question-website
     ```
-    (Replace `[your-repository-url]` with the URL of your GitHub repository)
 
 3.  **Create a Virtual Environment (Recommended):**
     ```bash
@@ -95,10 +94,6 @@ This is a simple yet modern website designed for interactive learning and knowle
 *   Explore different question types (multiple choice, true/false, etc.).
 *   Integrate a database for more scalable question management.
 
-## License
-
-[Optional: Add license information here, e.g., "This project is licensed under the MIT License."]
-
 ## Contact
 
-[Optional: Add your contact information here, e.g., "For questions or feedback, please contact: your-email@example.com"]
+For questions or feedback, please contact: ishawn23@protonmail.com
