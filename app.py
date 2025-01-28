@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request
 import google.generativeai as genai  
-import random # Import the 'random' module
+import random 
 import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -12,23 +12,23 @@ questions_data_original = [
     {"id": 4, "question": "Which technology allows AI systems to interpret and generate human language effectively?", "answer": "Natural Language Processing"},
     {"id": 5, "question": "What principle ensures that AI systems are understandable and trustworthy to users?", "answer": "Explainability"},
 ]
-questions_data = questions_data_original.copy() # Create a copy to shuffle
-random.shuffle(questions_data) # Shuffle the copied list ONCE at app startup
+questions_data = questions_data_original.copy() 
+random.shuffle(questions_data) 
 
 current_question_index = 0 
-# --- Google Gemini API Setup ---
-genai.configure(api_key=os.environ.get('GOOGLE_API_KEY'))  # **REPLACE WITH YOUR ACTUAL API KEY**
-model = genai.GenerativeModel('gemini-2.0-flash-exp')  # Or 'gemini-pro-vision' if needed; 'gemini-pro' is good for text
+
+genai.configure(api_key=os.environ.get('GOOGLE_API_KEY'))
+model = genai.GenerativeModel('gemini-2.0-flash-exp')  
 
 @app.route('/api/question', methods=['GET'])
 def get_question():
-    global current_question_index # Use the global index variable
-    if current_question_index >= len(questions_data): # If we've gone through all questions, reset index (or handle differently)
-        current_question_index = 0 # Reset to start from the beginning again (loop)
-        random.shuffle(questions_data) # Re-shuffle questions if looping
+    global current_question_index 
+    if current_question_index >= len(questions_data): 
+        current_question_index = 0 
+        random.shuffle(questions_data) 
 
-    question = questions_data[current_question_index] # Get question at current index
-    current_question_index += 1 # Increment index for next question request
+    question = questions_data[current_question_index] 
+    current_question_index += 1 
     return jsonify(question)
 
 @app.route('/api/submit_answer', methods=['POST'])
