@@ -18,7 +18,7 @@ random.shuffle(questions_data)
 current_question_index = 0 
 
 genai.configure(api_key=os.environ.get('GOOGLE_API_KEY'))
-model = genai.GenerativeModel('gemini-2.0-flash-exp')  
+model = genai.GenerativeModel('gemini-2.0-pro-exp-02-05')  
 
 @app.route('/api/question', methods=['GET'])
 def get_question():
