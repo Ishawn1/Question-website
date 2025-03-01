@@ -52,7 +52,15 @@
 <body class="bg-md-dark-bg font-sans text-md-dark-text-primary dark">
     <main class="container mx-auto p-4 sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
         <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 text-md-dark-primary">AI Quiz</h1>
-
+        <section id="progress-section" class="mb-6 animate-fade-in">
+            <div class="flex justify-between items-center mb-2">
+                <span id="progress-text" class="text-md-dark-text-secondary text-sm">Question 1 of 10</span>
+                <span id="progress-percentage" class="text-md-dark-secondary text-sm">10%</span>
+            </div>
+            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                <div id="progress-bar" class="bg-md-dark-secondary h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 10%"></div>
+            </div>
+        </section>
         <section id="question-area" class="mb-6 p-4 sm:p-5 rounded-lg shadow-md-elevation-1 bg-md-dark-surface animate-fade-in">
             <p id="question-text" class="text-base sm:text-lg md:text-xl text-md-dark-text-primary"></p>
         </section>
