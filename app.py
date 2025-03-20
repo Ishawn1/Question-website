@@ -22,7 +22,7 @@ questions_data_original = [
 
 # Configure the AI model
 genai.configure(api_key=os.environ.get('GOOGLE_API_KEY'))
-model = genai.GenerativeModel('gemini-2.0-pro-exp-02-05')
+model = genai.GenerativeModel('gemini-2.0-flash-lite')
 
 def initialize_session():
     """Initialize session variables if they don't exist"""
