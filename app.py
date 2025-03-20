@@ -113,7 +113,7 @@ def submit_answer():
         Correct answer: {correct_answer}
 
         Instructions:
-        1. Compare the user's answer to the correct answer to see if they are semantically equivalent and address the question accurately. Do not just look for keyword matches. Consider the meaning. If user has given empty answer give reply "Empty"
+        1. Compare the user's answer to the correct answer to see if they are semantically equivalent and address the question accurately. Do not just look for keyword matches. Consider the meaning. If users answer is correct but has some spelling error give the respose as Correct [spelling error, Correct spelling: '{correct_answer}'].
         2. If the user's answer is essentially the same as the correct answer in meaning and accurately answers the question, respond with ONLY the word: "Correct!".
         3. If the user's answer is incorrect, or does not answer the question, or is irrelevant, respond with: "Incorrect. The correct answer is: '{correct_answer}'. [Concise explanation of why the user was wrong and what the correct concept is, focusing on the key concept]."
         4. Keep all explanations very concise and directly related to the question and answer. Do not engage in general conversation or provide extra details.
