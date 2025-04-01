@@ -1,15 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Quiz App</title>
+    <title>AI Quiz & Games - Menu</title>
+    <!-- 1. Link to your standard CSS file (optional, for non-Tailwind styles) -->
     <link rel="stylesheet" href="/static/styles.css">
+    <!-- 2. Include the Tailwind CDN script -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 3. Include the inline Tailwind config script -->
     <script>
+        // Use the config provided by the user
         tailwind.config = {
             darkMode: 'class',
+            // No content array needed for CDN
             theme: {
                 extend: {
                     animation: {
@@ -22,24 +26,25 @@
                             '100%': { opacity: '1' },
                         },
                         slideInUp: {
-                            '0%': { transform: 'translateY(100%)', opacity: '0' },
+                            '0%': { transform: 'translateY(100%)', opacity: '0' }, // Adjust as needed
                             '100%': { transform: 'translateY(0)', opacity: '1' },
                         }
                     },
                     colors: {
+                        // Colors from user's config
                         'md-dark-bg': '#121212',
                         'md-dark-surface': '#1e1e1e',
                         'md-dark-primary': '#bb86fc',
                         'md-dark-primary-variant': '#3700b3',
                         'md-dark-secondary': '#03dac6',
                         'md-dark-secondary-variant': '#018786',
-                        'md-dark-text-primary': '#ffffff',
-                        'md-dark-text-secondary': '#d0d0d0',
+                        'md-dark-text-primary': '#ffffff', // Using user's primary text
+                        'md-dark-text-secondary': '#d0d0d0', // Using user's secondary text
                         'md-dark-on-primary': '#000000',
                         'md-dark-on-secondary': '#000000',
-                        'md-light-divider': '#BDBDBD',
+                        'md-light-divider': '#BDBDBD', // From user's config
                     },
-                    boxShadow: {
+                    boxShadow: { // Shadows from user's config
                         'md-elevation-1': '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
                         'md-elevation-2': '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
                         'md-elevation-3': '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
@@ -49,98 +54,72 @@
             plugins: [],
         }
     </script>
+    <!-- Removed inline Tailwind @apply rules to avoid unknown rule errors. -->
 </head>
-<body class="bg-md-dark-bg font-sans text-md-dark-text-primary dark">
-    <main class="container mx-auto p-4 sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 text-md-dark-primary">AI Quiz</h1>
-        
-        <!-- Score section -->
-        <section id="score-section" class="mb-4 flex justify-center">
-            <div class="px-4 py-2 bg-md-dark-surface rounded-lg shadow-md-elevation-1">
-                <span id="score-display" class="text-md-dark-primary font-medium text-base sm:text-lg">Score: 0/0 (0%)</span>
-            </div>
-        </section>
-        
-        <section id="progress-section" class="mb-6 animate-fade-in">
-            <div class="flex justify-between items-center mb-2">
-                <span id="progress-text" class="text-md-dark-text-secondary text-sm">Question 1 of 10</span>
-                <span id="progress-percentage" class="text-md-dark-secondary text-sm">0%</span>
-            </div>
-            <div class="w-full bg-gray-700 rounded-full h-2.5">
-                <div id="progress-bar" class="bg-md-dark-secondary h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
-            </div>
-        </section>
-        
-        <section id="question-area" class="mb-6 p-4 sm:p-5 rounded-lg shadow-md-elevation-1 bg-md-dark-surface animate-fade-in">
-            <p id="question-text" class="text-base sm:text-lg md:text-xl text-md-dark-text-primary"></p>
-            
-            <!-- Hint button -->
-            <button id="hint-button" class="mt-4 text-sm text-md-dark-secondary hover:underline flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-1">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
-                </svg>
-                Need a hint?
-            </button>
-            
-            <div id="hint-text" class="mt-3 p-3 bg-md-dark-primary bg-opacity-20 rounded text-md-dark-text-secondary text-sm hidden"></div>
-        </section>
+<!-- Apply base classes directly too for immediate effect -->
+<body class="bg-md-dark-bg font-sans text-md-dark-text-primary dark antialiased">
+    <main class="text-center w-full">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-12 text-md-dark-primary">AI Quiz & Games</h1>
 
-        <section id="answer-area" class="mb-6">
-            <textarea id="answer-input" placeholder="Enter your answer here..." class="w-full p-3 rounded-lg bg-md-dark-surface text-md-dark-text-primary focus:ring-2 focus:ring-md-dark-secondary focus:outline-none text-base sm:text-lg"></textarea>
-            <button id="submit-button" aria-label="Submit Answer" class="mt-4 w-full bg-md-dark-secondary text-md-dark-on-secondary shadow-md-elevation-2 font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out hover:animate-bounce focus:ring-2 focus:ring-md-dark-secondary focus:outline-none flex items-center justify-center text-base sm:text-lg">
-                <span class="mr-2">Submit</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12 7.5-7.5 7.5 7.5" />
-                </svg>
-            </button>
-        </section>
+        <nav class="w-full">
+            <!-- Use the .menu-link class defined in the <style> block above -->
+            <a href="{{ url_for('quiz_page') }}" class="menu-link">
+                Start AI Quiz Challenge
+            </a>
+            <a href="{{ url_for('game_page') }}" class="menu-link">
+                Play "Guess the Prompt"
+            </a>
+            <!-- Add more links here if you create more games/pages -->
+        </nav>
 
-        <section id="feedback-area" class="mb-6">
-            <div id="chatbot-output" class="p-4 rounded-lg bg-md-dark-surface shadow-md-elevation-1 text-md-dark-text-secondary animate-slide-in-up text-base sm:text-lg"></div>
-            <button id="next-question-button" aria-label="Next Question" class="hidden mt-4 w-full bg-md-dark-secondary text-md-dark-on-secondary shadow-md-elevation-2 font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out hover:animate-bounce focus:ring-2 focus:ring-md-dark-secondary focus:outline-none flex items-center justify-center text-base sm:text-lg">
-                <span class="mr-2">Next</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0-6.75-6.75M19.5 12l-6.75 6.75" />
-                </svg>
-            </button>
-        </section>
-
-        <section id="help-section" class="mt-8 border-t pt-6 border-md-light-divider">
-            <h2 class="text-xl font-semibold mb-3 text-md-dark-secondary text-base sm:text-lg">Need Help?</h2>
-            <textarea id="help-question-input" placeholder="Ask a question about this topic..." class="w-full p-3 rounded-lg bg-md-dark-surface text-md-dark-text-primary focus:ring-2 focus:ring-md-dark-secondary focus:outline-none text-base sm:text-lg"></textarea>
-            <button id="ask-chatbot-button" aria-label="Ask Chatbot" class="mt-4 w-full bg-md-dark-secondary text-md-dark-on-secondary shadow-md-elevation-2 font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out hover:animate-bounce focus:ring-2 focus:ring-md-dark-secondary focus:outline-none flex items-center justify-center text-base sm:text-lg">
-                <span class="mr-2">Ask Chatbot</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-                </svg>
-            </button>
-        </section>
-        
-        <!-- Reset Quiz Button -->
-        <section id="reset-section" class="mt-8">
-            <button id="reset-quiz-button" class="w-full bg-md-dark-primary text-md-dark-on-primary shadow-md-elevation-2 font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-opacity-90 focus:ring-2 focus:ring-md-dark-primary focus:outline-none flex items-center justify-center text-base sm:text-lg">
-                <span class="mr-2">Reset Quiz</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
-            </button>
-        </section>
-
-        <div class="fixed bottom-4 right-4">
-            <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="bg-gray-700 rounded-full p-2 focus:outline-none">
-                <svg id="dark-mode-icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-300">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-                </svg>
-                <svg id="dark-mode-icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-300 hidden">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-                </svg>
-            </button>
-        </div>
-
-        <div id="loading-spinner" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-            <div class="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-md-dark-secondary"></div>
-        </div>
+         <!-- Dark Mode Toggle Button -->
+         <div class="fixed bottom-4 right-4 z-50">
+             <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="bg-md-dark-surface text-md-dark-secondary rounded-full p-2 shadow-lg focus:outline-none focus:ring-2 focus:ring-md-dark-secondary">
+                 <!-- Sun Icon (Hidden in Dark Mode by default in this JS) -->
+                 <svg id="dark-mode-icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 hidden">
+                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                 </svg>
+                 <!-- Moon Icon (Visible in Dark Mode by default in this JS) -->
+<body class="bg-md-dark-bg font-sans text-md-dark-text-primary dark antialiased flex flex-col items-center justify-center min-h-screen p-4">
+                     <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                 </svg>
+             </button>
+         </div>
     </main>
-    <script src="/static/script.js"></script>
+            <a href="{{ url_for('quiz_page') }}" class="block w-full max-w-sm mx-auto text-center bg-md-dark-secondary text-md-dark-on-secondary shadow-md-elevation-2 font-bold py-3 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-opacity-80 focus:ring-2 focus:ring-offset-2 focus:ring-offset-md-dark-bg focus:ring-md-dark-secondary focus:outline-none text-lg mb-6">
+                Start AI Quiz Challenge
+            </a>
+            <a href="{{ url_for('game_page') }}" class="block w-full max-w-sm mx-auto text-center bg-md-dark-secondary text-md-dark-on-secondary shadow-md-elevation-2 font-bold py-3 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-opacity-80 focus:ring-2 focus:ring-offset-2 focus:ring-offset-md-dark-bg focus:ring-md-dark-secondary focus:outline-none text-lg mb-6">
+                Play "Guess the Prompt"
+            </a>
+        <script>
+         const applyDarkMode = (isDark) => {
+            if(!htmlElement || !sunIcon || !moonIcon) return; // Add null checks
+            htmlElement.classList.toggle('dark', isDark);
+            // Sun visible when LIGHT, Moon visible when DARK
+            sunIcon.classList.toggle('hidden', isDark);
+            moonIcon.classList.toggle('hidden', !isDark);
+        };
+
+         const initializeDarkMode = () => {
+            const savedMode = localStorage.getItem('darkMode');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedMode === 'true' || (savedMode === null && prefersDark);
+            applyDarkMode(isDark);
+        };
+
+         if (darkModeToggle) {
+             darkModeToggle.addEventListener('click', () => {
+                const isDark = htmlElement.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                applyDarkMode(isDark);
+            });
+         } else {
+             console.warn("Dark mode toggle button not found.");
+         }
+
+        // Initialize dark mode when the script runs
+        initializeDarkMode();
+     </script>
 </body>
 </html>
