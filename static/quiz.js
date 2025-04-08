@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('progress-bar');
     const progressText = document.getElementById('progress-text');
     const progressPercentage = document.getElementById('progress-percentage');
-    const loadingSpinner = document.getElementById('loading-spinner');
+    // const loadingSpinner = document.getElementById('loading-spinner'); // Removed reference
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const sunIcon = document.getElementById('dark-mode-icon-sun');
     const moonIcon = document.getElementById('dark-mode-icon-moon');
@@ -29,20 +29,31 @@ document.addEventListener('DOMContentLoaded', () => {
     let correctAnswersCount = 0;     // Updated by API responses
     let totalAttemptsCount = 0;      // Updated by API responses
     let isQuizActive = false;       // Controls if inputs should be generally enabled
+    let buttonOriginalContent = new Map(); // Store original button content during loading
 
-    // --- Helper: Loading Spinner ---
-    const showLoading = (show) => {
-        if (!loadingSpinner) return;
-        if (show) {
-            loadingSpinner.classList.remove('hidden');
-            requestAnimationFrame(() => { // Ensure display:flex is applied before opacity transition starts
-                 loadingSpinner.style.opacity = '1';
-            });
-        } else {
-            loadingSpinner.style.opacity = '0';
-            setTimeout(() => { loadingSpinner.classList.add('hidden'); }, 300); // Match transition duration
-        }
+    // --- Helper: Button Loading State ---
+    const spinnerSVG = `
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>`;
+
+    const showButtonLoading = (button) => {
+        if (!button) return;
+        buttonOriginalContent.set(button, button.innerHTML); // Store original content
+        button.disabled = true;
+        button.innerHTML = `<div class="flex items-center justify-center">${spinnerSVG}<span>Processing...</span></div>`;
+        button.classList.add('opacity-75', 'cursor-wait');
     };
+
+    const hideButtonLoading = (button) => {
+        if (!button || !buttonOriginalContent.has(button)) return;
+        button.innerHTML = buttonOriginalContent.get(button); // Restore original content
+        button.disabled = false;
+        button.classList.remove('opacity-75', 'cursor-wait');
+        buttonOriginalContent.delete(button); // Clean up map
+    };
+
 
     // --- Helper: Dark Mode ---
     const applyDarkMode = (isDark) => {
@@ -65,9 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Helper: API Request ---
+    // --- Helper: API Request (No longer controls global spinner) ---
      const apiRequest = async (endpoint, options = {}) => {
-        showLoading(true);
+        // showLoading(true); // Removed global spinner control
         try {
             const response = await fetch(endpoint, options);
             const data = await response.json(); // Try to parse JSON regardless of status code
@@ -80,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(`API Error (${endpoint}):`, error);
             throw error; // Re-throw the error to be caught by the caller
         } finally {
-            showLoading(false);
+            // showLoading(false); // Removed global spinner control
         }
     };
 
@@ -179,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Quiz Functions ---
     const resetQuiz = async () => {
         console.log("Attempting to reset quiz...");
+        showButtonLoading(resetButton); // Show loading on reset button
         try {
             const data = await apiRequest('/api/reset', { method: 'POST' });
             if (data.success) {
@@ -193,12 +205,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error resetting quiz:', error);
             displayQuizFeedback(`Failed to reset quiz: ${error.message}`, null, true);
+        } finally {
+            hideButtonLoading(resetButton); // Hide loading on reset button
         }
     };
 
     const getHint = async () => {
         if (!currentQuestionId || !isQuizActive || !hintButton || !hintTextElement) return;
-        hintButton.disabled = true; // Disable button while fetching
+        // hintButton.disabled = true; // Disable button while fetching - Handled by showButtonLoading
+        showButtonLoading(hintButton);
         try {
             const data = await apiRequest('/api/hint', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -214,13 +229,14 @@ document.addEventListener('DOMContentLoaded', () => {
              hintTextElement.textContent = `Unable to load hint: ${error.message}`;
              hintTextElement.classList.remove('hidden');
              if(hintButton.querySelector('span')) {
-                hintButton.querySelector('span').textContent = 'Hint Error';
-             }
-        } finally {
-            // Re-enable button after fetch attempt
-            if(hintButton) hintButton.disabled = false;
-        }
-    };
+                 hintButton.querySelector('span').textContent = 'Hint Error';
+              }
+         } finally {
+             // Re-enable button after fetch attempt - Handled by hideButtonLoading
+             // if(hintButton) hintButton.disabled = false;
+             hideButtonLoading(hintButton);
+         }
+      };
 
      const toggleHint = () => {
          if (!isQuizActive || !hintButton || !hintTextElement) return;
@@ -244,12 +260,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Determine API endpoint based on isNext flag
         const apiUrl = isNext ? '/api/question?next=true' : '/api/question';
-        console.log(`Fetching question from: ${apiUrl}`);
+         console.log(`Fetching question from: ${apiUrl}`);
+         // No specific button for initial fetch, maybe indicate loading in question area?
+         questionTextElement.innerHTML = `<div class="flex items-center justify-center text-md-dark-text-secondary">${spinnerSVG} Loading question...</div>`;
 
-        try {
-            const data = await apiRequest(apiUrl); // Call API
+         try {
+             const data = await apiRequest(apiUrl); // Call API
 
-            // Update state variables from the backend response FIRST
+             // Update state variables from the backend response FIRST
             questionTextElement.textContent = data.question;
             currentQuestionId = data.id;
             currentQuestionNumber = data.question_number || 1;
@@ -272,13 +290,19 @@ document.addEventListener('DOMContentLoaded', () => {
             setQuizControlsEnabled(true); // Enable controls now that question is loaded
             if(answerInputElement) answerInputElement.focus(); // Focus input for user
 
-        } catch (error) {
-            console.error('Error fetching question:', error);
-            questionTextElement.textContent = 'Error loading question.';
-            displayQuizFeedback(`Could not load question: ${error.message}`, null, true);
-            setQuizControlsEnabled(false); // Keep controls disabled on critical error
-        }
-    };
+         } catch (error) {
+             console.error('Error fetching question:', error);
+             questionTextElement.textContent = 'Error loading question.';
+             displayQuizFeedback(`Could not load question: ${error.message}`, null, true);
+             setQuizControlsEnabled(false); // Keep controls disabled on critical error
+         } finally {
+             // Ensure loading indicator is removed even if there was an error during fetch
+             if (questionTextElement.innerHTML.includes('Loading question...')) {
+                 // If it still shows loading, clear it or show error text
+                 // This case is handled by the error block setting textContent
+             }
+         }
+     };
 
     const submitAnswer = async () => {
         if (!isQuizActive || !answerInputElement || !currentQuestionId) return;
@@ -288,14 +312,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Disable all controls during submission process
-        setQuizControlsEnabled(false);
-        if(nextQuestionButton) nextQuestionButton.classList.add('hidden');
+         // Disable all controls during submission process
+         setQuizControlsEnabled(false);
+         if(nextQuestionButton) nextQuestionButton.classList.add('hidden');
+         showButtonLoading(submitButton); // Show loading on submit button
 
-        try {
-            const data = await apiRequest('/api/submit_answer', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question_id: currentQuestionId, user_answer: userAnswer })
+         try {
+             const data = await apiRequest('/api/submit_answer', {
+                 method: 'POST', headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({ question_id: currentQuestionId, user_answer: userAnswer })
             });
 
             // Update state counts from the reliable backend response
@@ -323,11 +348,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error submitting answer:', error);
-            displayQuizFeedback(`Error submitting answer: ${error.message}`, null, true);
-            // Re-enable ALL controls if submission itself fails, allowing retry/help
-            setQuizControlsEnabled(true);
-        }
-    };
+             displayQuizFeedback(`Error submitting answer: ${error.message}`, null, true);
+             // Re-enable ALL controls if submission itself fails, allowing retry/help
+             setQuizControlsEnabled(true);
+         } finally {
+             hideButtonLoading(submitButton); // Hide loading on submit button
+         }
+     };
 
     const askForHelp = async () => {
         // Check if help controls are enabled and we have a question context
@@ -339,40 +366,57 @@ document.addEventListener('DOMContentLoaded', () => {
         const helpQuestion = helpQuestionInputElement.value.trim();
         if (!helpQuestion) {
             displayQuizFeedback("Please type your help question first.", null); // Neutral feedback, not error
-            return;
-        }
+             return;
+         }
 
-        setHelpControlsEnabled(false); // Disable only help controls during the API call
-        // Optional: Indicate help is being fetched without clearing main feedback
-        const helpButtonText = askChatbotButton ? askChatbotButton.querySelector('span').textContent : 'Ask AI Helper';
-        if(askChatbotButton && askChatbotButton.querySelector('span')) askChatbotButton.querySelector('span').textContent = 'Thinking...';
-
-
-        try {
-            const data = await apiRequest('/api/ask_chatbot', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question_id: currentQuestionId, help_question: helpQuestion })
-            });
-
-            // Display the help response - prepend it to the existing feedback for context
-             const helpResponsePara = document.createElement('div'); // Use div for structure
-             helpResponsePara.classList.add('mt-4', 'pt-4', 'border-t', 'border-md-dark-divider', 'text-md-dark-text-secondary', 'text-sm'); // Styling for separation
-             helpResponsePara.innerHTML = `<strong class="text-md-dark-primary">AI Helper:</strong><p class="mt-1">${data.chatbot_response || 'No response received.'}</p>`;
-             if(chatbotOutputElement) chatbotOutputElement.appendChild(helpResponsePara);
-             // Optionally scroll to the bottom of the feedback area
-             if(chatbotOutputElement) chatbotOutputElement.scrollTop = chatbotOutputElement.scrollHeight;
+         // setHelpControlsEnabled(false); // Disable only help controls during the API call - Handled by showButtonLoading
+         showButtonLoading(askChatbotButton);
+         // Optional: Indicate help is being fetched without clearing main feedback - Handled by showButtonLoading text
 
 
-        } catch (error) {
-            console.error('Error asking for help:', error);
-            // Display error distinctly, maybe temporarily replacing main feedback
-            displayQuizFeedback(`Sorry, couldn't get help: ${error.message}`, null, true);
-        } finally {
-            setHelpControlsEnabled(true); // Re-enable help controls
-            // Restore original button text
-            if(askChatbotButton && askChatbotButton.querySelector('span')) askChatbotButton.querySelector('span').textContent = helpButtonText;
-        }
-    };
+         try {
+             const data = await apiRequest('/api/ask_chatbot', {
+                 method: 'POST', headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({ question_id: currentQuestionId, help_question: helpQuestion })
+             });
+
+             // Display the help response in a distinct block
+             const helpResponseContainer = document.createElement('div');
+             helpResponseContainer.classList.add(
+                 'mt-4', 'pt-4', 'border-t', 'border-md-dark-divider', // Separator line
+                 'p-3', 'bg-md-dark-surface', 'rounded', // Background and padding
+                 'text-sm' // Font size
+             );
+             helpResponseContainer.innerHTML = `
+                 <strong class="text-md-dark-primary block mb-2">AI Helper Response:</strong>
+                 <p class="text-md-dark-text-secondary leading-relaxed">${data.chatbot_response || 'No response received.'}</p>
+             `;
+
+             // Append the new container to the main feedback area
+             if (chatbotOutputElement) {
+                 chatbotOutputElement.appendChild(helpResponseContainer);
+                 // Optionally scroll to the bottom of the feedback area
+                 chatbotOutputElement.scrollTop = chatbotOutputElement.scrollHeight;
+             }
+
+
+         } catch (error) {
+             console.error('Error asking for help:', error);
+             // Display error distinctly, maybe temporarily replacing main feedback
+             // Or append an error message in the same styled block?
+             const errorContainer = document.createElement('div');
+             errorContainer.classList.add('mt-4', 'pt-4', 'border-t', 'border-md-dark-divider', 'p-3', 'bg-red-900', 'bg-opacity-20', 'rounded', 'text-sm');
+             errorContainer.innerHTML = `<strong class="text-md-dark-error block mb-2">AI Helper Error:</strong><p class="text-red-300">${error.message}</p>`;
+             if (chatbotOutputElement) {
+                 chatbotOutputElement.appendChild(errorContainer);
+                 chatbotOutputElement.scrollTop = chatbotOutputElement.scrollHeight;
+             }
+             // displayQuizFeedback(`Sorry, couldn't get help: ${error.message}`, null, true); // Old way
+         } finally {
+             // setHelpControlsEnabled(true); // Re-enable help controls - Handled by hideButtonLoading
+             hideButtonLoading(askChatbotButton);
+         }
+     };
 
     // --- Event Listeners Setup ---
     const setupEventListeners = () => {

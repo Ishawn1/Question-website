@@ -93,11 +93,11 @@
          <nav class="mb-6">
              <a href="{{ url_for('index') }}" class="text-md-dark-secondary hover:underline">← Back to Menu</a>
          </nav>
-        <h1 class="text-3xl sm:text-4xl font-bold text-center mb-8 text-md-dark-primary">Game: Guess the Prompt</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-center mb-10 text-md-dark-primary">Game: Guess the Prompt</h1> 
 
         <!-- ==================== Guess the Prompt Game Section ==================== -->
         <section id="game-area" class="mb-12">
-             <button id="get-content-button" aria-label="Load New AI Content for Game" class="mb-6 w-full bg-md-dark-primary text-md-dark-on-primary shadow-md-elevation-2 font-bold py-2.5 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-opacity-90 focus:ring-2 focus:ring-offset-2 focus:ring-offset-md-dark-bg focus:ring-md-dark-primary focus:outline-none flex items-center justify-center text-base">
+             <button id="get-content-button" aria-label="Load New AI Content for Game" class="mb-8 w-full bg-md-dark-primary text-md-dark-on-primary shadow-md-elevation-2 font-bold py-2.5 px-4 rounded-lg transition duration-300 ease-in-out hover:bg-opacity-90 focus:ring-2 focus:ring-offset-2 focus:ring-offset-md-dark-bg focus:ring-md-dark-primary focus:outline-none flex items-center justify-center text-base"> 
                 <span class="mr-2">Load AI Content</span>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -105,14 +105,14 @@
             </button>
 
              <!-- AI Content Display Area -->
-             <div id="ai-content-display" class="mb-6 p-5 rounded-lg shadow-md-elevation-2 bg-md-dark-surface min-h-[150px] text-md-dark-on-surface">
+             <div id="ai-content-display" class="mb-8 p-5 rounded-lg shadow-md-elevation-2 bg-md-dark-surface min-h-[150px] text-md-dark-on-surface leading-relaxed"> 
                  <p class="text-md-dark-text-secondary">Click "Load AI Content" to start the game.</p>
              </div>
 
              <!-- Guess Input Section (Initially hidden) -->
-             <div id="game-input-area" class="hidden animate-fade-in mb-6">
+             <div id="game-input-area" class="hidden animate-fade-in mb-8 pt-8 border-t border-md-dark-divider"> 
                  <textarea id="prompt-guess-input" placeholder="What prompt created this? Enter your guess..." rows="3" class="w-full p-3 rounded-lg bg-md-dark-surface border border-md-dark-divider text-md-dark-on-surface focus:ring-2 focus:ring-md-dark-secondary focus:outline-none text-base mb-4 disabled:opacity-50" disabled></textarea>
-                 <button id="submit-guess-button" aria-label="Submit Prompt Guess" class="w-full bg-md-dark-secondary text-md-dark-on-secondary shadow-md-elevation-2 font-bold py-2.5 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-opacity-80 focus:ring-2 focus:ring-offset-2 focus:ring-offset-md-dark-bg focus:ring-md-dark-secondary focus:outline-none flex items-center justify-center text-base disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                 <button id="submit-guess-button" aria-label="Submit Prompt Guess" class="w-full bg-md-dark-secondary text-md-dark-on-secondary shadow-md-elevation-2 font-bold py-2.5 px-4 rounded-lg transition duration-300 ease-in-out hover:bg-opacity-80 focus:ring-2 focus:ring-offset-2 focus:ring-offset-md-dark-bg focus:ring-md-dark-secondary focus:outline-none flex items-center justify-center text-base disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                     <span class="mr-2">Submit Guess</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transform rotate-180">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
@@ -121,25 +121,25 @@
              </div>
 
              <!-- Game Feedback Area -->
-             <div id="game-feedback-area" class="p-4 rounded-lg shadow-md-elevation-1 text-base min-h-[50px] border-l-4 border-transparent">
+             <div id="game-feedback-area" class="p-4 rounded-lg shadow-md-elevation-1 text-base min-h-[50px] border-l-4 border-transparent leading-relaxed pt-8 border-t border-md-dark-divider"> 
                  <p class="text-md-dark-text-secondary">Game feedback will appear here after you submit a guess.</p>
              </div>
         </section>
 
         <!-- Dark Mode Toggle Button -->
         <div class="fixed bottom-4 right-4 z-50">
-             <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="bg-md-dark-surface text-md-dark-secondary rounded-full p-2 shadow-lg focus:outline-none focus:ring-2 focus:ring-md-dark-secondary">
+             <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="bg-md-dark-surface text-md-dark-secondary rounded-full p-2 shadow-lg focus:outline-none focus:ring-2 focus:ring-md-dark-secondary transition duration-300 ease-in-out">
                  <svg id="dark-mode-icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
                  <svg id="dark-mode-icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
-             </button>
-        </div>
+              </button>
+         </div>
 
-        <!-- Loading Spinner Overlay -->
-        <div id="loading-spinner" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] transition-opacity duration-300">
-            <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-md-dark-secondary"></div>
-        </div>
-    </main>
-    <!-- Link to the specific JS file for the game -->
-    <script src="/static/game.js"></script>
+         <!-- Loading Spinner Overlay Removed -->
+         <!-- <div id="loading-spinner" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] transition-opacity duration-300">
+             <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-md-dark-secondary"></div>
+         </div> -->
+     </main>
+     <!-- Link to the specific JS file for the game -->
+     <script src="/static/game.js"></script>
 </body>
 </html>

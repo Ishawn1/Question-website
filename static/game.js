@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const promptGuessInput = document.getElementById('prompt-guess-input');
     const submitGuessButton = document.getElementById('submit-guess-button');
     const gameFeedbackArea = document.getElementById('game-feedback-area');
-    const loadingSpinner = document.getElementById('loading-spinner');
+    // const loadingSpinner = document.getElementById('loading-spinner'); // Removed reference
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const sunIcon = document.getElementById('dark-mode-icon-sun');
     const moonIcon = document.getElementById('dark-mode-icon-moon');
@@ -16,17 +16,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State Variables ---
     let currentGameContentId = null;
     let isGameInputActive = false; // To control enabling/disabling game inputs
+    let buttonOriginalContent = new Map(); // Store original button content during loading
 
-     // --- Helper: Loading Spinner ---
-    const showLoading = (show) => {
-        if (!loadingSpinner) return;
-        if (show) {
-            loadingSpinner.classList.remove('hidden');
-             requestAnimationFrame(() => { loadingSpinner.style.opacity = '1'; });
-        } else {
-            loadingSpinner.style.opacity = '0';
-            setTimeout(() => { loadingSpinner.classList.add('hidden'); }, 300);
-        }
+    // --- Helper: Button Loading State ---
+    const spinnerSVG = `
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>`;
+
+    const showButtonLoading = (button) => {
+        if (!button) return;
+        buttonOriginalContent.set(button, button.innerHTML); // Store original content
+        button.disabled = true;
+        button.innerHTML = `<div class="flex items-center justify-center">${spinnerSVG}<span>Processing...</span></div>`;
+        button.classList.add('opacity-75', 'cursor-wait');
+    };
+
+    const hideButtonLoading = (button) => {
+        if (!button || !buttonOriginalContent.has(button)) return;
+        button.innerHTML = buttonOriginalContent.get(button); // Restore original content
+        button.disabled = false;
+        button.classList.remove('opacity-75', 'cursor-wait');
+        buttonOriginalContent.delete(button); // Clean up map
     };
 
     // --- Helper: Dark Mode ---
@@ -50,9 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Helper: API Request ---
+    // --- Helper: API Request (No longer controls global spinner) ---
      const apiRequest = async (endpoint, options = {}) => {
-        showLoading(true);
+        // showLoading(true); // Removed global spinner control
         try {
             const response = await fetch(endpoint, options);
             const data = await response.json();
@@ -64,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(`API Error (${endpoint}):`, error);
             throw error;
         } finally {
-            showLoading(false);
+            // showLoading(false); // Removed global spinner control
         }
     };
 
@@ -142,8 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchGameContent = async () => {
         if(!aiContentDisplay || !gameInputArea) return;
         setGameInputEnabled(false); // Disable input while loading
+        showButtonLoading(getContentButton); // Show loading on the button
         displayGameFeedback('Loading new AI content...', null);
-        aiContentDisplay.innerHTML = '<p class="text-md-dark-text-secondary">Loading...</p>'; // Placeholder
+        aiContentDisplay.innerHTML = `<div class="flex items-center justify-center text-md-dark-text-secondary">${spinnerSVG} Loading content...</div>`; // Placeholder with spinner
 
         try {
             const data = await apiRequest('/api/generated_content');
@@ -176,32 +189,37 @@ document.addEventListener('DOMContentLoaded', () => {
             displayGameFeedback(''); // Clear feedback area
             currentGameContentId = null;
              setGameInputEnabled(false); // Keep disabled on error
-        }
-    };
+         } finally {
+             hideButtonLoading(getContentButton); // Always hide button loading state
+         }
+     };
 
     const submitGuess = async () => {
         if (!isGameInputActive || !promptGuessInput || !currentGameContentId) return;
         const userGuess = promptGuessInput.value.trim();
-        if (!userGuess) { displayGameFeedback('Please enter your guess.', null, null, true); return; }
+         if (!userGuess) { displayGameFeedback('Please enter your guess.', null, null, true); return; }
 
-        setGameInputEnabled(false); // Disable during submission
-        displayGameFeedback('Evaluating your guess...', null);
+         // setGameInputEnabled(false); // Disable during submission - Handled by showButtonLoading
+         showButtonLoading(submitGuessButton);
+         displayGameFeedback('Evaluating your guess...', null);
 
-        try {
-            const data = await apiRequest('/api/submit_prompt_guess', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content_id: currentGameContentId, user_guess: userGuess })
+         try {
+             const data = await apiRequest('/api/submit_prompt_guess', {
+                 method: 'POST', headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({ content_id: currentGameContentId, user_guess: userGuess })
             });
             displayGameFeedback(data.feedback, data.similarity, data.original_prompt);
             // Keep input enabled after guess to allow another guess or loading new content? Yes.
-            setGameInputEnabled(true);
+             setGameInputEnabled(true); // Re-enable input after evaluation
 
 
-        } catch (error) {
-            displayGameFeedback(`Evaluation error: ${error.message}`, null, null, true);
-             setGameInputEnabled(true); // Re-enable on error
-        }
-    };
+         } catch (error) {
+             displayGameFeedback(`Evaluation error: ${error.message}`, null, null, true);
+              setGameInputEnabled(true); // Re-enable on error
+         } finally {
+             hideButtonLoading(submitGuessButton); // Always hide button loading state
+         }
+     };
 
     // --- Event Listeners Setup ---
     const setupEventListeners = () => {
